@@ -34,30 +34,89 @@ public class Driver {
 				} else {
 					player2 = new Player(2, 1, false);
 				}
+			} else if(players == 0) {
+				player1 = new Player(1, 1, true);
+				player2 = new Player(2, 0, true);
 			}
-			int x,y;
-			while(!gameBoard.hasPlayerWon(0) && !gameBoard.hasPlayerWon(1)) {
-				System.out.println("Player 1, make your move:");
-				while(!gameBoard.placeSymbol(player1, x, y)) {
-					x = input.nextInt();
-					y = input.nextInt();
-				}
-				if(gameBoard.hasPlayerWon(player1.getPlayerSymbol())) {
-					System.out.println("Player 1 wins!");
+			
+			boolean show = false;
+			int moveCount = 0;
+			// How to handle moves if both players are not bots
+			if(!player1.getBot() && !player2.getBot()) {
+				while(!gameBoard.hasPlayerWon(player1.getPlayerSymbol()) && !gameBoard.hasPlayerWon(player2.getPlayerSymbol()) && moveCount != 9) {
+					printPotentialMoves(player1, true);
+					int move = input.nextInt();
+					if(move == 0) {
+						show = true;
+						showPotentialMoves(show);
+						printPotentialMoves(player1, false);
+					}
+					
+					while(!gameBoard.placeSymbol(player1, move)) {
+						move = input.nextInt();
+					}
+					
 					gameBoard.showBoard();
-					break;
-				}
-				System.out.println("Player 2, make your move:");
-				x = input.nextInt();
-				y = input.nextInt();
-				gameBoard.placeSymbol(player2, x, y);
-				if(gameBoard.hasPlayerWon(player2.getPlayerSymbol())) {
-					System.out.println("Player 2 wins!");
+					moveCount++;
+					if(gameBoard.hasPlayerWon(player1.getPlayerSymbol()) || moveCount == 9) {
+						break;
+					}
+					
+					printPotentialMoves(player2, true);
+					move = input.nextInt();
+					if(move == 0) {
+						show = true;
+						showPotentialMoves(show);
+						printPotentialMoves(player2, false);
+					}
+					
+					while(!gameBoard.placeSymbol(player2, move)) {
+						move = input.nextInt();
+					}
+					
 					gameBoard.showBoard();
-					break;
+					moveCount++;
 				}
-				gameBoard.showBoard();
 			}
+			// How to handle moves if both players are bots
+			if(player1.getBot() && player2.getBot()) {
+				while(!gameBoard.hasPlayerWon(player1.getPlayerSymbol()) && !gameBoard.hasPlayerWon(player2.getPlayerSymbol()) && moveCount != 9) {
+					while(!gameBoard.botMove(player1, player1.getBot()));
+					gameBoard.showBoard();
+					System.out.println();
+					moveCount++;
+					
+					if(gameBoard.hasPlayerWon(player1.getPlayerSymbol()) || moveCount == 9) {
+						break;
+					}
+					while(!gameBoard.botMove(player2, player2.getBot()));
+					gameBoard.showBoard();
+					System.out.println();
+					moveCount++;
+				}
+			}
+			
+			if(gameBoard.hasPlayerWon(player1.getPlayerSymbol())) {
+				System.out.println("Player 1 has won!");
+			} else if(gameBoard.hasPlayerWon(player2.getPlayerSymbol())) {
+				System.out.println("Player 2 has won!");
+			}
+			if(moveCount == 9) {
+				System.out.println("Tie game! No winner!");
+			}
+		}
+	}
+	public static void printPotentialMoves(Player player, boolean show) {
+		System.out.println("Player " + player.getPlayerNum() + " , make your move:");
+		if(show) {
+			System.out.println("(Enter 0 to show potential moves)");
+		}
+	} 
+	public static void showPotentialMoves(boolean show) {
+		if(show) {
+			System.out.println("1|2|3 \n"
+					+  "4|5|6 \n"
+					+  "7|8|9");
 		}
 	}
 }

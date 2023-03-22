@@ -19,12 +19,63 @@ public class Board {
 		}
 	}
 	
-	public boolean placeSymbol(Player player, int x, int y) {
-		if(x > 2 || y > 2) {
+	public boolean botMove(Player player, boolean isBot) {
+		int space = -1;
+		while(space <= 0 || space >= 10) {
+			space = (int) (Math.random() * 10);
+		}
+		
+		int x, y;
+		if(space % 3 == 0) {
+			y = 2;
+		} else if(space % 3 == 2) {
+			y = 1;
+		} else {
+			y = 0;
+		}
+		if(space >= 1 && space <= 3) {
+			x = 0;
+		} else if(space >= 4 && space <= 6) {
+			x = 1;
+		} else {
+			x = 2;
+		}
+		
+		if(playingBoard[x][y] != -1) {
+			return false;
+		} else {
+			playingBoard[x][y] = player.getPlayerSymbol();
+			return true;
+		}
+	}
+	
+	public boolean placeSymbol(Player player, int space) {
+		if(space == 0) {
+			return false;
+		}
+		if(space > 9 || space < 1) {
 			System.out.println("Invalid move, please try again.");
 			return false;
-		} else if(playingBoard[x][y] != -1) {
-			System.out.println("That space has already been used.");
+		} 
+		int x, y;
+		if(space % 3 == 0) {
+			y = 2;
+		} else if(space % 3 == 2) {
+			y = 1;
+		} else {
+			y = 0;
+		}
+		if(space >= 1 && space <= 3) {
+			x = 0;
+		} else if(space >= 4 && space <= 6) {
+			x = 1;
+		} else {
+			x = 2;
+		}
+		
+		
+		if(playingBoard[x][y] != -1) {
+			System.out.println("That space has already been used. Please enter another move:");
 			return false;
 		} else {
 			playingBoard[x][y] = player.getPlayerSymbol();

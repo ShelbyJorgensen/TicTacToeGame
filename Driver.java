@@ -95,13 +95,36 @@ public class Driver {
 					moveCount++;
 				}
 			}
+			if(!player1.getBot() && player2.getBot()) {
+				while(!gameBoard.hasPlayerWon(player1.getPlayerSymbol()) && !gameBoard.hasPlayerWon(player2.getPlayerSymbol()) && moveCount != 9) {
+					printPotentialMoves(player1, true);
+					int move = input.nextInt();
+					if(move == 0) {
+						show = true;
+						showPotentialMoves(show);
+						printPotentialMoves(player1, false);
+					}
+					
+					while(!gameBoard.placeSymbol(player1, move)) {
+						move = input.nextInt();
+					}
+					
+					if(gameBoard.hasPlayerWon(player1.getPlayerSymbol()) || moveCount == 9) {
+						gameBoard.showBoard();
+						break;
+					}
+					while(!gameBoard.botMove(player2, player2.getBot()));
+					gameBoard.showBoard();
+					System.out.println();
+					moveCount++;
+				}
+			}
 			
 			if(gameBoard.hasPlayerWon(player1.getPlayerSymbol())) {
 				System.out.println("Player 1 has won!");
 			} else if(gameBoard.hasPlayerWon(player2.getPlayerSymbol())) {
 				System.out.println("Player 2 has won!");
-			}
-			if(moveCount == 9) {
+			} else if(moveCount == 9) {
 				System.out.println("Tie game! No winner!");
 			}
 		}
